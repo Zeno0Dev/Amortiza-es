@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amortizações Pagas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { background-color: #90EE90; color: black; padding: 10px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background-color: #228B22; color: white; padding: 8px; text-align: left; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; }
+        .summary { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .summary div { font-weight: bold; }
+        @media (max-width: 600px) { table, thead, tbody, th, td, tr { display: block; } }
+    </style>
+</head>
+<body>
+    <h1>Amortizações Pagas</h1>
+    
+    <div class="summary">
+        <div>Valor Pago: <span id="valorTotal"></span></div>
+        <div>42 Parcelas</div>
+        <div>Amortizações pagas: <span id="parcelasPagas"></span></div>
+        <div>Ano: 2025</div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Data:</th>
+                <th>Quantia:</th>
+                <th>Valor:</th>
+                <th>Quem amortizou:</th>
+                <th>Notas</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaCorpo"></tbody>
+    </table>
+
+    <script>
+        // Array de dados (atualize aqui! Adicione objetos para novas linhas)
+        const dados = [
+            { data: '25 de ago.', quantia: '1x', valor: '445,18', quem: 'José', notas: '' },
+            { data: '03 de Set.', quantia: '1x', valor: '449,43', quem: 'José', notas: '' },
+            { data: '26 de Set.', quantia: '1x', valor: '456,83', quem: 'José', notas: '' }
+            // Adicione mais: { data: 'Nova data', quantia: '1x', valor: 'Novo valor', quem: 'Nome', notas: 'Nota opcional' },
+        ];
+
+        // Função para popular a tabela e calcular totais
+        function carregarTabela() {
+            const corpo = document.getElementById('tabelaCorpo');
+            let totalValor = 0;
+            dados.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.data}</td>
+                    <td>${item.quantia}</td>
+                    <td>${item.valor}</td>
+                    <td>${item.quem}</td>
+                    <td>${item.notas}</td>
+                `;
+                corpo.appendChild(row);
+                // Calcular total (converte vírgula para ponto)
+                totalValor += parseFloat(item.valor.replace(',', '.'));
+            });
+            document.getElementById('parcelasPagas').textContent = dados.length;
+            document.getElementById('valorTotal').textContent = totalValor.toFixed(2).replace('.', ',');
+        }
+
+        // Carrega ao abrir a página
+        carregarTabela();
+    </script>
+</body>
+</html>
