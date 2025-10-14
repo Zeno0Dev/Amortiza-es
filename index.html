@@ -5,23 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amortizações Pagas</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { background-color: #90EE90; color: black; padding: 10px; text-align: left; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #fff; }
+        .header { background-color: #90EE90; color: black; padding: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; border-bottom: 2px solid #228B22; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+        .chart-placeholder { width: 150px; height: 50px; background: linear-gradient(90deg, #FF6384 20%, #36A2EB 40%, #FFCE56 60%, #4BC0C0 80%); position: relative; overflow: hidden; }
+        .chart-placeholder::before { content: ''; position: absolute; top: 10px; left: 0; width: 100%; height: 2px; background: #000; } /* Linha preta */
+        .chart-placeholder::after { content: ''; position: absolute; bottom: 0; left: 10%; width: 10%; height: 30%; background: #FFCE56; } /* Barra amarela */
+        .summary { display: flex; justify-content: space-between; flex-wrap: wrap; margin: 10px 0; background-color: #90EE90; padding: 5px; }
+        .summary div { font-weight: bold; margin: 0 10px; flex: 1 1 100px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { background-color: #228B22; color: white; padding: 8px; text-align: left; }
         td { padding: 8px; border-bottom: 1px solid #ddd; }
-        .summary { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .summary div { font-weight: bold; }
-        @media (max-width: 600px) { table, thead, tbody, th, td, tr { display: block; } }
+        @media (max-width: 600px) {
+            .header { justify-content: center; text-align: center; }
+            .chart-placeholder { margin-top: 10px; width: 100%; height: 80px; }
+            .summary { flex-direction: column; align-items: flex-start; }
+            .summary div { margin: 5px 0; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { margin: 0 0 1rem 0; border: 1px solid #ddd; }
+            td { border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 50%; }
+            td:before { position: absolute; top: 0; left: 6px; width: 45%; padding-right: 10px; white-space: nowrap; content: attr(data-label); font-weight: bold; }
+        }
     </style>
 </head>
 <body>
-    <h1>Amortizações Pagas</h1>
+    <div class="header">
+        <h1>Amortizações pagas</h1>
+        <div class="chart-placeholder"></div>
+    </div>
     
     <div class="summary">
-        <div>Valor Pago: <span id="valorTotal"></span></div>
+        <div>Valor total: <span id="valorTotal">1.351,44</span></div>
         <div>42 Parcelas</div>
-        <div>Amortizações pagas: <span id="parcelasPagas"></span></div>
+        <div>Parcelas pagas: <span id="parcelasPagas">3</span></div>
         <div>Ano: 2025</div>
     </div>
     
@@ -35,41 +52,29 @@
                 <th>Notas</th>
             </tr>
         </thead>
-        <tbody id="tabelaCorpo"></tbody>
+        <tbody id="tabelaCorpo">
+            <tr>
+                <td data-label="Data:">25 de ago.</td>
+                <td data-label="Quantia:">1x</td>
+                <td data-label="Valor:">445,18</td>
+                <td data-label="Quem amortizou:">José</td>
+                <td data-label="Notas"></td>
+            </tr>
+            <tr>
+                <td data-label="Data:">03 de Set.</td>
+                <td data-label="Quantia:">1x</td>
+                <td data-label="Valor:">449,43</td>
+                <td data-label="Quem amortizou:">José</td>
+                <td data-label="Notas"></td>
+            </tr>
+            <tr>
+                <td data-label="Data:">26 de Set.</td>
+                <td data-label="Quantia:">1x</td>
+                <td data-label="Valor:">456,83</td>
+                <td data-label="Quem amortizou:">José</td>
+                <td data-label="Notas"></td>
+            </tr>
+        </tbody>
     </table>
-
-    <script>
-        // Array de dados (atualize aqui! Adicione objetos para novas linhas)
-        const dados = [
-            { data: '25 de ago.', quantia: '1x', valor: '445,18', quem: 'José', notas: '' },
-            { data: '03 de Set.', quantia: '1x', valor: '449,43', quem: 'José', notas: '' },
-            { data: '26 de Set.', quantia: '1x', valor: '456,83', quem: 'José', notas: '' }
-            // Adicione mais: { data: 'Nova data', quantia: '1x', valor: 'Novo valor', quem: 'Nome', notas: 'Nota opcional' },
-        ];
-
-        // Função para popular a tabela e calcular totais
-        function carregarTabela() {
-            const corpo = document.getElementById('tabelaCorpo');
-            let totalValor = 0;
-            dados.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.data}</td>
-                    <td>${item.quantia}</td>
-                    <td>${item.valor}</td>
-                    <td>${item.quem}</td>
-                    <td>${item.notas}</td>
-                `;
-                corpo.appendChild(row);
-                // Calcular total (converte vírgula para ponto)
-                totalValor += parseFloat(item.valor.replace(',', '.'));
-            });
-            document.getElementById('parcelasPagas').textContent = dados.length;
-            document.getElementById('valorTotal').textContent = totalValor.toFixed(2).replace('.', ',');
-        }
-
-        // Carrega ao abrir a página
-        carregarTabela();
-    </script>
 </body>
 </html>
